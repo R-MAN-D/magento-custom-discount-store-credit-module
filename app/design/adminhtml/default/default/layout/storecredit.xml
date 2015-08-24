@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author      Armande Bayanes
+ */
+ -->
+<layout version="0.1.0">
+    <storecredit_adminhtml_storecredit_index>
+        <reference name="content">
+            <block type="storecredit/adminhtml_storecredit" name="storecredit" />
+        </reference>
+    </storecredit_adminhtml_storecredit_index>
+
+    <storecredit_adminhtml_history_index>
+        <reference name="content">
+            <block type="storecredit/adminhtml_history" name="storecredit_history" />
+        </reference>
+    </storecredit_adminhtml_history_index>
+</layout>

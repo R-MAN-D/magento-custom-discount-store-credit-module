@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author      Armande Bayanes
+ */
+ -->
+<layout version="1.0">
+
+    <storecredit_history_index> <!-- [module]_[controller]_[method] -->
+        <update handle="customer_account" /> <!-- Inherits customer navigation menu under Store Credit. -->
+        <!--reference name="head">
+            <action method="addCss"><stylesheet>css/jquery.jqGrid.ui.css</stylesheet></action>
+            <action method="addCss"><stylesheet>css/jquery.ui.1.8/smoothness/jquery-ui-1.8.16.custom.css</stylesheet></action>
+            <action method="addJs"><script>xy/jquery.jqGrid.locale-en.js</script></action>
+            <action method="addJs"><script>xy/jquery.jqGrid.min.js</script></action>
+            <action method="addJs"><script>xy/xy.storecredits_index.js</script></action>
+
+        </reference-->
+        <reference name="content">
+            <block type="core/template" name="storecredit_history" template="storecredit/history.phtml" /> <!-- app/design/frontend/[theme]/default/template/storecredit/history.phtml -->
+            <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml" />
+        </reference>
+    </storecredit_history_index>
+
+    <customer_account>
+        <reference name="customer_account_navigation"> <!-- Adds "My Store Credit" to customer navigation menu. -->
+            <action method="addLink" translate="label" module="storecredit">
+                <name>StoreCredit</name>
+                <path>store-credit/history</path> <!-- URL to access. -->
+                <label>My Store Credit History</label>
+            </action>
+        </reference>
+    </customer_account>
+
+    <customer_account_index> <!-- Add the "Store Credit Summary" in "Customer Account Dashboard". -->
+        <reference name="my.account.wrapper">
+            <block type="core/template" name="storecredit_summary" template="storecredit/summary.phtml"/>
+        </reference>
+    </customer_account_index>
+
+    <checkout_cart_index> <!-- Make the "Store Credit" visible in "Cart". -->
+        <reference name="head">
+            <action method="addJs"><script>storecredit/checkout_cart_index.js</script></action>
+        </reference>
+
+        <reference name="content">
+            <block type="core/template" name="storecredit_discount" template="storecredit/discount.phtml" />
+        </reference>
+    </checkout_cart_index>
+
+</layout>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category    Custom
+ * @package     Custom_StoreCredit
+ * @author      Armande Bayanes
+ * @license
+ */
+ -->
+<config>
+    <modules>
+        <Custom_StoreCredit> <!-- Map to /app/code/local/Custom/StoreCredit/ folder. -->
+            <active>true</active>
+            <codePool>local</codePool> <!--  Instruct to look for this module's files in /app/code/local/ folder. -->
+        </Custom_StoreCredit>
+    </modules>
+</config>

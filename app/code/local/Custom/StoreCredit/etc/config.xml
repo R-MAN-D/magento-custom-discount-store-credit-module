@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author      Armande Bayanes
+ */
+ -->
+<config>
+    <modules>
+        <Custom_StoreCredit>
+            <version>1.0</version>
+        </Custom_StoreCredit>
+    </modules>
+
+    <frontend>
+        <routers>
+            <storecredit>
+                <use>standard</use>
+                <args>
+                    <module>Custom_StoreCredit</module>
+                    <frontName>store-credit</frontName> <!-- Defines the URL on which the controller of the module will be accessible. -->
+                </args>
+            </storecredit>
+        </routers>
+
+        <!--
+        File: design/frontend/[theme]/layout/storecredit.xml
+        Note: Config for front-end layout. -->
+        <layout>
+            <updates>
+                <storecredit>
+                    <file>storecredit.xml</file>
+                </storecredit>
+            </updates>
+        </layout>
+
+        <!--
+            START: Observers to be triggered in relation to Store Credit.
+            1. sales_quote_collect_totals_after = In the shopping cart, after collecting totals.
+            2. sales_order_place_after          = After placing the order.
+        -->
+        <events>
+            <sales_quote_collect_totals_after>
+                <observers>
+                    <Custom_StoreCredit_Model_Observer>
+                        <class>Custom_StoreCredit_Model_Observer</class>
+                        <method>discountCheck</method>
+                    </Custom_StoreCredit_Model_Observer>
+                </observers>
+            </sales_quote_collect_totals_after>
+
+            <sales_order_place_after>
+                <observers>
+                    <Custom_StoreCredit_Model_Observer>
+                        <class>Custom_StoreCredit_Model_Observer</class>
+                        <method>creditUpdate</method>
+                    </Custom_StoreCredit_Model_Observer>
+                </observers>
+            </sales_order_place_after>
+
+            <paypal_prepare_line_items>
+                <observers>
+                    <Custom_StoreCredit_Model_Observer>
+                        <class>Custom_StoreCredit_Model_Observer</class>
+                        <method>prepareItemsForPaypal</method>
+                    </Custom_StoreCredit_Model_Observer>
+                </observers>
+            </paypal_prepare_line_items>
+        </events>
+        <!-- END: Observers to be triggered in relation to Store Credit. -->
+
+    </frontend>
+
+    <admin>
+        <routers>
+            <storecredit>
+                <use>admin</use>
+                <args>
+                    <module>Custom_StoreCredit</module>
+                    <frontName>storecredit</frontName>
+                </args>
+            </storecredit>
+        </routers>
+    </admin>
+    <adminhtml>
+        <menu>
+            <customer> <!-- Add as sub-menu to existing admin "Customers" menu. -->
+                <children>
+                    <storecredit module="storecredit">
+                        <title>Store Credits</title>
+                        <!--sort_order>71</sort_order-->
+                        <children>
+                            <items1 module="storecredit">
+                                <title>Add / Give Credit to Customer</title>
+                                <sort_order>1</sort_order>
+                                <action>storecredit/adminhtml_storecredit</action>
+                            </items1>
+                            <items2 module="storecredit">
+                                <title>Credits History</title>
+                                <sort_order>2</sort_order>
+                                <action>storecredit/adminhtml_history</action>
+                            </items2>
+                        </children>
+                    </storecredit>
+                </children>
+            </customer>
+        </menu>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <Custom_StoreCredit>
+                            <title>Store Credit Module</title>
+                            <sort_order>10</sort_order>
+                        </Custom_StoreCredit>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <layout>
+            <updates>
+                <storecredit>
+                    <file>storecredit.xml</file>
+                </storecredit>
+            </updates>
+        </layout>
+
+    </adminhtml>
+
+    <global>
+
+        <models>
+            <storecredit>
+                <class>Custom_StoreCredit_Model</class>
+                <resourceModel>storecredit_mysql4</resourceModel>
+            </storecredit>
+            <storecredit_mysql4>
+                <class>Custom_StoreCredit_Model_Mysql4</class>
+                <entities> <!-- DB Tables. -->
+                    <storecredit>
+                        <table>storecredit</table>
+                    </storecredit>
+                    <history>
+                        <table>storecredit_history</table>
+                    </history>
+                </entities>
+            </storecredit_mysql4>
+        </models>
+
+        <resources> <!-- For DB Tables Installation. -->
+            <storecredit_setup>
+                <setup>
+                    <module>Custom_StoreCredit</module>
+                    <class>Custom_StoreCredit_Model_Resource_Mysql4_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </storecredit_setup>
+            <storecredit_setup>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </storecredit_setup>
+            <storecredit_setup>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </storecredit_setup>
+        </resources>
+
+        <helpers>
+            <storecredit>
+                <!--
+                File: app/code/local/Custom/StoreCredit/Helper/Data.php
+                Note: Minimum requirement of "Config for front-end layout". -->
+                <class>Custom_StoreCredit_Helper</class>
+            </storecredit>
+        </helpers>
+
+        <blocks>
+            <storecredit>
+                <class>Custom_StoreCredit_Block</class>
+            </storecredit>
+
+            <adminhtml>
+                <rewrite>
+                    <sales_order_totals>Custom_StoreCredit_Block_Adminhtml_Order</sales_order_totals>
+                    <sales_order_invoice_totals>Custom_StoreCredit_Block_Adminhtml_Invoice</sales_order_invoice_totals>
+                    <!--sales_order_creditmemo_totals>[]_Block_Adminhtml_Sales_Creditmemo</sales_order_creditmemo_totals-->
+                </rewrite>
+            </adminhtml>
+
+            <sales>
+                <rewrite>
+                    <order_totals>Custom_StoreCredit_Block_Order</order_totals> <!-- Customer Account Order Info. -->
+                    <!--order_invoice_totals>[]_Block_Sales_Invoice</order_invoice_totals>
+                    <order_creditmemo_totals>[]_Block_Sales_Creditmemo</order_creditmemo_totals-->
+                </rewrite>
+            </sales>
+        </blocks>
+
+        <sales> <!-- This will actually apply the Store Credit discount to the cart Total. -->
+            <quote>
+                <totals>
+                    <deduction>
+                        <class>Custom_StoreCredit_Model_Deduction</class>
+                        <after>discount</after>
+                    </deduction>
+                </totals>
+            </quote>
+
+        </sales>
+    </global>
+
+</config>
